@@ -1,4 +1,5 @@
-from rest_framework import generics
+from re import A
+from rest_framework import generics, mixins
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
@@ -27,8 +28,62 @@ class ProductDetailAPIView(generics.RetrieveAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
 
+
     # lookupfield='pk'
 product_detail_view = ProductDetailAPIView.as_view()
+
+
+class ProductUpdateAPIView(generics.UpdateAPIView):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+    lookupfield = 'pk'
+
+    def perform_update(self, serialiser):
+        instance = serialiser.save()
+        if not instance.content:
+            instance.content = instance.title
+
+
+product_update_view = ProductUpdateAPIView.as_view()
+
+
+class ProductDeleteAPIView(generics.DestroyAPIView):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+    lookupfield = 'pk'
+
+    def perform_delete(self, instance):
+        super().perform_delete(instance)
+
+
+product_delete_view = ProductDeleteAPIView.as_view()
+
+
+class ProductMixinView(mixins.CreateModelMixin, mixins.ListModelMixin, mixins.RetrieveModelMixin, generics.GenericAPIView):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+    lookup_field = 'pk'
+
+    def get(self, req, *args, **kwargs):
+        print(args, kwargs)
+        pk = kwargs.get("pk")
+        if pk is not None:
+            return self.retrieve(req, *args, **kwargs)
+        return self.list(req, *args, **kwargs)
+
+    def post(self, req, *args, **kwargs):
+        return self.create(req, *args, **kwargs)
+
+    def perform_create(self, serializer):
+        # serializer.save(user=self.request.user)
+        title = serializer.validated_data.get('title')
+        content = serializer.validated_data.get('content') or None
+        if content is None:
+            content = "this is a single view doing cool stuff"
+        serializer.save(content=content)
+
+
+product_mixin_view = ProductMixinView.as_view()
 
 
 @api_view(['GET', 'POST'])
