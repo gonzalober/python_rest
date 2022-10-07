@@ -1,4 +1,4 @@
-# Python REST API - Django Rest-Framework
+# Python REST API - Django Rest-Framework
 
 ### Backend dependencies:
 
