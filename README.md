@@ -1,6 +1,6 @@
 # Python REST API - Django Rest-Framework
 
-### Backend dependencies:
+### Backend dependencies:
 
 - djangorestframework
 - pyyaml
