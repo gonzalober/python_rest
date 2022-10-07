@@ -79,7 +79,7 @@ class ProductMixinView(mixins.CreateModelMixin, mixins.ListModelMixin, mixins.Re
         title = serializer.validated_data.get('title')
         content = serializer.validated_data.get('content') or None
         if content is None:
-            content = "this is a single view doing cool stuff"
+            content = "Hola desde mi single view"
         serializer.save(content=content)
 
 
