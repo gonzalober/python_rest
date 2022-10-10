@@ -33,6 +33,15 @@ class ProductDetailAPIView(generics.RetrieveAPIView):
 product_detail_view = ProductDetailAPIView.as_view()
 
 
+class ProductListAPIView(generics.ListAPIView):
+
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+
+
+product_list_view = ProductListAPIView.as_view()
+
+
 class ProductUpdateAPIView(generics.UpdateAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
@@ -58,6 +67,8 @@ class ProductDeleteAPIView(generics.DestroyAPIView):
 
 product_delete_view = ProductDeleteAPIView.as_view()
 
+# mixins and generics views
+
 
 class ProductMixinView(mixins.CreateModelMixin, mixins.ListModelMixin, mixins.RetrieveModelMixin, generics.GenericAPIView):
     queryset = Product.objects.all()
@@ -74,16 +85,18 @@ class ProductMixinView(mixins.CreateModelMixin, mixins.ListModelMixin, mixins.Re
     def post(self, req, *args, **kwargs):
         return self.create(req, *args, **kwargs)
 
-    def perform_create(self, serializer):
-        # serializer.save(user=self.request.user)
-        title = serializer.validated_data.get('title')
-        content = serializer.validated_data.get('content') or None
-        if content is None:
-            content = "Hola desde mi single view"
-        serializer.save(content=content)
+    # def perform_create(self, serializer):
+    #     # serializer.save(user=self.request.user)
+    #     title = serializer.validated_data.get('title')
+    #     content = serializer.validated_data.get('content') or None
+    #     if content is None:
+    #         content = "Hola desde mi single view"
+    #     serializer.save(content=content)
 
 
 product_mixin_view = ProductMixinView.as_view()
+
+# function based version
 
 
 @api_view(['GET', 'POST'])
