@@ -22,7 +22,6 @@ class ProductGenericViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, vi
     '''
         get -> list -> Queryset
         get -> retrieve -> Product instance Details View
-
       '''
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
